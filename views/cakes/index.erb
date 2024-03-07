@@ -1,0 +1,86 @@
+  <% @cakes %>
+
+<% @cakes.each do |cake| %>
+    <div>
+
+        <h1>
+            <%= cake['Name'] %>   
+        </h1>
+
+        <p> <%= cake['Description']%> </p> <p> <%= cake['Price']%> </p>
+
+    </div>
+
+    <% if session[:user_id] == 1 %>
+        <form action='/cakes/<%= cake["id"] %>/update' method="POST">
+            <input type='text' name="Name" placeholder="Cake Name"></input>
+            <input type='text' name="Description" placeholder="Description"></input>
+            <input type='integer' name="Price" Placeholder="Price"></input>
+            <button type='submit'>Change Cake</button>
+        </form>
+    <% end %>
+
+
+    <% if session[:user_id] == 1 %>
+        <form action='/cakes/<%= cake["id"] %>/delete' method="POST">
+            <button type='submit'>Delete Cake</button>
+        </form>
+    <% end %>
+
+<% end %>
+
+<% if session[:user_id] == 1 %>
+    <h2>
+        <form action='/cakes' method="POST">
+            <input type='text' name="Name" placeholder="Name"></input>
+            <input type='text' name="Description" placeholder="Description"></input>
+            <input type='integer' name="Price" placeholder="Price"></input>
+            <button type='submit'>Add new cake</button>
+        </form>
+    </h2>
+<% end %>
+
+   
+
+
+<% if session[:user_id] == 1 %>
+<h2>
+    <form action='/cakes/RegisterAdmin' method="POST">
+        <input type='text' name="Username" placeholder="Username"></input>
+        <input type='text' name="Password" placeholder="Password"></input>
+        <button type='submit'>Register Admin</button>
+    </form>
+</h2>
+<% end %>
+
+
+
+<h2>
+    <form action='/cakes/Login' method="POST">
+        <input type='text' name="Username" placeholder="Username"></input>
+        <input type='text' name="Password" placeholder="Password"></input>
+        <button type='submit'>Login as Admin</button>
+    </form>
+</h2>
+
+<% if session[:user_id] == nil %>
+<h2>
+    <form action='/cakes/UserLogin' method="POST">
+        <input type='text' name="Username" placeholder="Username"></input>
+        <input type='text' name="Password" placeholder="Password"></input>
+        <button type='submit'>Login as User</button>
+    </form>
+</h2>
+<% end %>
+
+<% if session[:user_id] == 1 %>
+    <h2>
+        <form action='/cakes/Logout' method="POST">
+            <button type='submit'>Logout</button>
+        </form>
+    </h2>
+<% end %>
+
+
+
+
