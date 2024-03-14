@@ -84,27 +84,36 @@ class App < Sinatra::Base
         session.destroy
         redirect "/cakes"
     end
-
-end
-
-post '/cakes/UserLogin' do  
-    username = params['Username']
-    cleartext_password = params['Password']
-    user = db.execute('SELECT * FROM Users WHERE Username = ?', username).first
-    password_from_db = BCrypt::Password.new(user['Password'])
-    if password_from_db == cleartext_password
-        session[:user_id] = 2
-        else
-        #resultat2    
+    post '/cakes/UserLogin' do  
+        username = params['Username']
+        cleartext_password = params['Password']
+        user = db.execute('SELECT * FROM Users WHERE Username = ?', username).first
+        password_from_db = BCrypt::Password.new(user['Password'])
+        if password_from_db == cleartext_password
+            session[:user_id] = 2
+            else
+            #resultat2    
+        end
+        redirect "/cakes" 
     end
-    redirect "/cakes" 
-end
+    
+    post '/cakes/RegisterUser' do  
+        username = params['Username']
+        cleartext_password = params['Password']
+        hashed_password = BCrypt::Password.create(cleartext_password)
+        query = 'INSERT INTO Users(Username, Password) VALUES (?,?) RETURNING id'
+        result = db.execute(query, username, hashed_password).first
+        redirect "/cakes" 
+    end
 
-post '/cakes/RegisterUser' do  
-    username = params['Username']
-    cleartext_password = params['Password']
-    hashed_password = BCrypt::Password.create(cleartext_password)
-    query = 'INSERT INTO Users(Username, Password) VALUES (?,?) RETURNING id'
-    result = db.execute(query, username, hashed_password).first
-    redirect "/cakes" 
+    post '/cakes/SubmitRating' do  
+        if session[:user_id] == nil
+            redirect "/cakes"
+        end
+        rating = params['Rating'] 
+        query = 'INSERT INTO Ratings(Rating) VALUES (?,?) RETURNING id'
+        result = db.execute(query, ).first 
+        redirect "/cakes" 
+    end
+
 end

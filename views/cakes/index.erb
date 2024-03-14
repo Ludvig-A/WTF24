@@ -27,6 +27,15 @@
         </form>
     <% end %>
 
+    <% if session[:user_id] == 1 or session[:user_id] == 2%>
+        <h2>
+            <form action='/cakes/SubmitRating' method="POST">
+                <input type='integer' name="Rating" placeholder="Rating"></input>
+                <button type='submit'>Submit Rating 1-5</button>
+            </form>
+        </h2>
+    <% end %>
+
 <% end %>
 
 <% if session[:user_id] == 1 %>
