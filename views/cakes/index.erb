@@ -9,6 +9,10 @@
 
         <p> <%= cake['Description']%> </p> <p> <%= cake['Price']%> </p>
 
+    <a href='/cakes/<%= cake["id"]%>'>
+        <button>View Cake</button>
+    </a>
+
     </div>
 
     <% if session[:user_id] == 1 %>
@@ -29,9 +33,10 @@
 
     <% if session[:user_id] == 1 or session[:user_id] == 2%>
         <h2>
-            <form action='/cakes/SubmitRating' method="POST">
+            <form action='/cakes/<%= cake["id"] %>/SubmitRating' method="POST">
                 <input type='integer' name="Rating" placeholder="Rating"></input>
-                <button type='submit'>Submit Rating 1-5</button>
+                <input type='text' name="Review" placeholder="Review"></input>
+                <button type='submit'>Submit Review</button>
             </form>
         </h2>
     <% end %>

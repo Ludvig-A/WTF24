@@ -18,7 +18,20 @@ class App < Sinatra::Base
         #@user_id = session[:user_id] 
         @cakes = db.execute('SELECT * FROM Cakes')
         erb :'cakes/index'
+        #SELECT AVG(rating) AS average_rating, * FROM Cakes JOIN Ratings ON Ratings.cake_id = Cakes.id WHERE Cakes.id = 1
     end
+
+    get '/cakes/:id' do |id|
+        @cake = db.execute('SELECT * FROM Cakes WHERE id = ?', id).first
+        @average_rating = db.execute('SELECT AVG(rating) AS average_rating, * FROM Cakes JOIN Ratings ON Ratings.cake_id = Cakes.id WHERE Cakes.id = ?', id).first
+        @reviews = db.execute('SELECT Review FROM Ratings AS cake_reviews WHERE cake_id = ?', id)
+        erb :'Cakes/show'
+    end
+
+    #get '/cakes/1' do
+    #    @cakes = db.execute('SELECT AVG(rating) AS average_rating, * FROM Cakes JOIN Ratings ON Ratings.cake_id = Cakes.id WHERE Cakes.id = 1')
+    #    erb :'index'
+    #end
 
 
     post '/cakes' do  
@@ -106,14 +119,16 @@ class App < Sinatra::Base
         redirect "/cakes" 
     end
 
-    post '/cakes/SubmitRating' do  
+    post '/cakes/:id/SubmitRating' do |cake_id|
         if session[:user_id] == nil
             redirect "/cakes"
         end
         rating = params['Rating'] 
-        query = 'INSERT INTO Ratings(Rating) VALUES (?,?) RETURNING id'
-        result = db.execute(query, ).first 
+        review = params['Review']
+        query = 'INSERT INTO Ratings(rating, review, cake_id) VALUES (?,?,?) RETURNING id'
+        result = db.execute(query, rating, review, cake_id).first 
         redirect "/cakes" 
     end
 
+ 
 end
