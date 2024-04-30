@@ -24,7 +24,8 @@ class App < Sinatra::Base
     get '/cakes/:id' do |id|
         @cake = db.execute('SELECT * FROM Cakes WHERE id = ?', id).first
         @average_rating = db.execute('SELECT AVG(rating) AS average_rating, * FROM Cakes JOIN Ratings ON Ratings.cake_id = Cakes.id WHERE Cakes.id = ?', id).first
-        @reviews = db.execute('SELECT Review FROM Ratings AS cake_reviews WHERE cake_id = ?', id)
+        @reviews = db.execute('SELECT Review FROM Ratings WHERE cake_id = ?', id).map { |row| row['Review'] }
+        @ingredients = db.execute('SELECT Ingredients FROM Cakes WHERE id = ?', id).first
         erb :'Cakes/show'
     end
 
@@ -34,15 +35,16 @@ class App < Sinatra::Base
     #end
 
 
-    post '/cakes' do  
+    post '/cakes' do
         if session[:user_id] == nil
             redirect "/cakes"
         end
         name = params['Name'] 
         description = params['Description']
         price = params['Price']
-        query = 'INSERT INTO Cakes(Name, Description, Price) VALUES (?,?,?) RETURNING id'
-        result = db.execute(query, name, description, price).first 
+        ingredients = params['Ingredients']
+        query = 'INSERT INTO Cakes(Name, Description, Price, Ingredients) VALUES (?,?,?,?) RETURNING id'
+        db.execute(query, name, description, price, ingredients)
         redirect "/cakes" 
     end
 
@@ -129,6 +131,14 @@ class App < Sinatra::Base
         result = db.execute(query, rating, review, cake_id).first 
         redirect "/cakes" 
     end
+
+    post '/show/:id/order' do |cake_id|
+        if session[:user_id] == nil
+            redirect "/cakes"
+        end
+        name = params['Username']
+        @user_id = db.execute('SELECT id FROM Users WHERE Username = ?', name).first
+        query = 'INSERT INTO cake_order()'
 
  
 end

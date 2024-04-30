@@ -6,5 +6,19 @@
 
 <p>Pris:</p><p><%=@cake['Price']%></p>
 
-<p>Reviews:</p><p> <%=@reviews['cake_reviews'.to_i]%> </p>
+<p>Reviews: <%= @reviews.join(", ") %></p>
+
+<p> Ingredients: <%= @ingredients['Ingredients'] %></p>
+
+
+
+<% if session[:user_id] != nil %>
+<p> Beställ Tårta: </p>
+    <h2>
+        <form action='/show/<%= cake["id"] %>/order' method="POST">
+            <input type='text' name="Username" placeholder="What is your name?"></input>
+            <button type='submit'>Order</button>
+        </form>
+    </h2>
+<% end %>
 
